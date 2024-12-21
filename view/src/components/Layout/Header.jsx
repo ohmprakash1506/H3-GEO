@@ -1,9 +1,12 @@
 import React from 'react'
-import { AppBar, Toolbar, Typography } from '@mui/material'
+import Navbar from './Navbar'
 
 const Header = ({ onNavbarInputChange}) => {
   return (
-    
+    <>
+    <h1 style={{ textAlign: "left", marginLeft: "2rem" }}>Adloggs</h1>
+    <Navbar/>
+    </>
   )
 }
 
