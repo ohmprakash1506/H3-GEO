@@ -1,71 +1,82 @@
-import React, { useState } from "react";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+// Components
 import OpenStreetMaps from "../MainMap/OpenStreetMaps";
+
+// UI library
 import { Button } from "@mui/material";
+
+// Redux slices
 import { useGetH3IndexQuery } from "../../redux/features/h3Slice";
+import { setMapState, clearMapState, setSubmitState } from "../../redux/features/mapSlice";
+
 import { cellToLatLng, cellToBoundary } from "h3-js";
 
 const Map = () => {
-  const [input, setInput] = useState({
-    lat: "",
-    lng: "",
-    resolution: "",
-  });
+  const dispatch = useDispatch();
+  const mapState = useSelector((state) => state.map);
+  const { lat, lng, resolution } = mapState;
 
-  const [submit, setSubmit] = useState(false);
-  const {
-    data: h3,
-    isLoading,
-    error,
-  } = useGetH3IndexQuery(input, { skip: !submit });
-  console.log(`data:`, h3);
-
-  // if(error) return <h1>Error from api</h1>
-  // if(isLoading) return <h1>Loading...</h1>
+  const { data: h3 } = useGetH3IndexQuery(
+    { lat, lng, resolution },
+    { skip: !mapState }
+  );
+  console.log(`hh3:`, h3);
+  
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setInput({
-      ...input,
-      [name]: value,
-    });
+    dispatch(setMapState({ ...mapState, [name]: value }));
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(`Inputs:`, input);
-    setSubmit(true);
+    dispatch(setMapState(mapState));
+    dispatch(setSubmitState({ submit: true }));
   };
 
   const handleClear = () => {
-    setInput({
-      lat: "",
-      lng: "",
-      resolution: "",
-    });
+    dispatch(clearMapState());
   };
 
-  const center = h3?.response ? cellToLatLng(h3.response) : null ;
-  const boundary = h3?.response ? cellToBoundary(h3.response) : [] ;
+  const center = h3?.response ? cellToLatLng(h3.response) : null;
+  const boundary = h3?.response ? cellToBoundary(h3.response) : [];
 
   return (
-    <div style={{ textAlign: "center", marginTop: "2rem" }}>
-      <form onSubmit={handleSubmit} style={{ marginTop: "2rem" }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: "1rem", // Adds horizontal spacing between input fields
-          }}
-        >
+    <div style={{ position: "relative", height: "100vh", width: "100vw" }}>
+      {/* Map Component */}
+      <OpenStreetMaps center={center} boundary={boundary} />
+
+      {/* Overlay Form */}
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          position: "absolute",
+          top: "10px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          background: "rgba(255, 255, 255, 0.9)", // Transparent background
+          borderRadius: "8px",
+          padding: "10px 20px",
+          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+          zIndex: 1000, // Ensure the form is above the map
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
           <label>
             lat:
             <input
               type="text"
               name="lat"
-              value={input.lat}
+              value={mapState.lat}
               onChange={handleChange}
-              style={{ marginLeft: "1rem", padding: "0.5rem" }}
+              style={{
+                marginLeft: "0.5rem",
+                padding: "0.3rem 0.5rem",
+                borderRadius: "4px",
+                border: "1px solid #ccc",
+              }}
               placeholder="Enter lat"
               required
             />
@@ -76,9 +87,14 @@ const Map = () => {
             <input
               type="text"
               name="lng"
-              value={input.lng}
+              value={mapState.lng}
               onChange={handleChange}
-              style={{ marginLeft: "1rem", padding: "0.5rem" }}
+              style={{
+                marginLeft: "0.5rem",
+                padding: "0.3rem 0.5rem",
+                borderRadius: "4px",
+                border: "1px solid #ccc",
+              }}
               placeholder="Enter lng"
               required
             />
@@ -89,9 +105,14 @@ const Map = () => {
             <input
               type="text"
               name="resolution"
-              value={input.resolution}
+              value={mapState.resolution}
               onChange={handleChange}
-              style={{ marginLeft: "1rem", padding: "0.5rem" }}
+              style={{
+                marginLeft: "0.5rem",
+                padding: "0.3rem 0.5rem",
+                borderRadius: "4px",
+                border: "1px solid #ccc",
+              }}
               placeholder="Enter resolution"
               required
             />
@@ -100,33 +121,19 @@ const Map = () => {
           <Button
             variant="contained"
             type="submit"
-            style={{
-              marginLeft: "2rem",
-              padding: "0.5rem 1rem",
-            }}
+            style={{ padding: "0.4rem 1rem" }}
           >
             Submit
           </Button>
           <Button
             variant="contained"
             onClick={handleClear}
-            style={{
-              marginLeft: "2rem",
-              padding: "0.5rem 1rem",
-            }}
+            style={{ padding: "0.4rem 1rem" }}
           >
             Clear
           </Button>
         </div>
       </form>
-
-      <div
-        style={{
-          marginTop: "2rem",
-        }}
-      >
-        <OpenStreetMaps center={center} boundary={boundary}/>
-      </div>
     </div>
   );
 };

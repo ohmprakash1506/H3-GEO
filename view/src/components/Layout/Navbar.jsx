@@ -17,7 +17,6 @@ const Navbar = () => {
   return (
     <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
       <Tabs value={value} onChange={handleChange} centered>
-        <Tab label="Home" component={Link} to="/home"/>
         <Tab label="Map" component={Link} to="/map"/>
       </Tabs>
     </Box>

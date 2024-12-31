@@ -35,11 +35,12 @@ const OpenStreetMaps = ({ center, boundary }) => {
   console.log(`Boundary:`, boundary);
 
   return (
-    <div style={{ height: "500px", width: "80%", margin: "auto" }}>
+    <div style={{ height: "450px", width: "100%", margin: "auto" }}>
       <MapContainer
         center={center ? center : [20.5937, 78.9629]} // Default to India coordinates
         zoom={center ? 13 : 5}
-        style={{ height: "100%", width: "100%" }}
+        style={{ height: "130%", width: "130%" }}
+        zoomControl={false}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -48,14 +49,14 @@ const OpenStreetMaps = ({ center, boundary }) => {
         {boundary.length > 0 && (
           <Polygon positions={boundary} color="blue" fillOpacity={0.4} />
         )}
-        {center && Array.isArray(center) && center.length === 2 && (
+        {/* {center && Array.isArray(center) && center.length === 2 && (
           <>
             <Marker position={center}>
               <Popup>Center of H3 Index</Popup>
             </Marker>
             <CenterMapOnMarker center={center} />
           </>
-        )}
+        )} */}
       </MapContainer>
     </div>
   );

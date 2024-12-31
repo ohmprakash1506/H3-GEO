@@ -11,14 +11,33 @@ const App = () => {
         style={{
           display: "flex",
           flexDirection: "column",
-          minHeight: "100vh", // Ensure the parent container spans the entire viewport height
+          minHeight: "100vh", // Full viewport height
         }}
       >
-        {/* Header (with Navbar) */}
-        <Header />
-        <AppRoute/>
-        {/* Footer */}
-        <Footer />
+        <div style={{ position: "fixed", top: 0, width: "100%", zIndex: 1000 }}>
+          <Header />
+        </div>
+        
+        {/* Main content */}
+        <div
+          style={{
+            flex: 1, // Ensures AppRoute takes remaining space
+          }}
+        >
+          <AppRoute />
+        </div>
+        
+        {/* Fixed Footer */}
+        <div
+          style={{
+            position: "fixed",
+            bottom: 0,
+            width: "100%",
+            zIndex: 1000,
+          }}
+        >
+          <Footer />
+        </div>
       </div>
     </Router>
   );

@@ -12,6 +12,7 @@ export const h3Slice = createApi({
     endpoints: (builder) => ({ 
         getH3Index: builder.query({
             query: (data) => {
+                console.log(`Api Data:`, data);
                 const params = new URLSearchParams()
                 if(data.lat) params.append('lat', data.lat);
                 if(data.lng) params.append('lng', data.lng);
